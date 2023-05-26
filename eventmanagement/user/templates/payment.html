@@ -1,0 +1,191 @@
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Payment Form</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+    .form-group label {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <h1>Payment Form</h1>
+    <form method="POST" action="{% url 'payment' conference_id=conference.id %}" onsubmit="return validateForm(event)">
+      {% csrf_token %}
+      {% if errors %}
+        <ul class="messages">
+          {% for error in errors %}
+            <li class="alert alert-danger">{{ error }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+      <div class="form-group">
+        <label for="cvv">CVV:</label>
+        <input type="text" class="form-control" id="cvv" name="cvv" required>
+        <small id="cvv-error" class="form-text text-danger"></small>
+      </div>
+      <div class="form-group">
+        <label for="card-number">Card Number:</label>
+        <input type="text" class="form-control" id="card-number" name="card_number" required>
+        <small id="card-number-error" class="form-text text-danger"></small>
+      </div>
+      <div class="form-group">
+        <label for="starting-time">Starting Time:</label>
+        <input type="time" class="form-control" id="starting-time" name="starting_time" required>
+        <small id="time-error" class="form-text text-danger"></small>
+        <ul id="validation-bullets" class="list-unstyled"></ul>
+      </div>
+      <div class="form-group">
+        <label for="ending-time">Ending Time:</label>
+        <input type="time" class="form-control" id="ending-time" name="ending_time" required>
+      </div>
+      <div class="form-group">
+        <label for="date">Date:</label>
+        <input type="date" class="form-control" id="date" name="date" required>
+        <small id="date-error" class="form-text text-danger"></small>
+      </div>      
+      <input type="hidden" name="conference_id" value="{{ conference.id }}">
+      <button type="submit" class="btn btn-primary">Pay Now</button>
+    </form>
+  </div>
+  
+  <!-- Bootstrap JavaScript and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script>
+    // Card number validation function
+    function validateCardNumber() {
+      var cardNumberInput = document.getElementById('card-number');
+      var cardNumberError = document.getElementById('card-number-error');
+      var cardNumberPattern = /^\d{16}$/;
+  
+      // Remove any previous error message
+      cardNumberError.textContent = '';
+  
+      if (!cardNumberPattern.test(cardNumberInput.value)) {
+        cardNumberError.textContent = 'Please enter a valid 16-digit card number.';
+        return false;
+      }
+  
+      // Additional custom validation
+      // Example: Ensure the card number is not already used in the system
+      // Replace 'validateCardNumberCustom' with your own custom validation function
+      if (!validateCardNumberCustom(cardNumberInput.value)) {
+        cardNumberError.textContent = 'This card number is already used.';
+        return false;
+      }
+  
+      return true;
+    }
+  
+    // CVV validation function
+    function validateCVV() {
+      var cvvInput = document.getElementById('cvv');
+      var cvvError = document.getElementById('cvv-error');
+      var cvvPattern = /^\d{3,4}$/;
+  
+      // Remove any previous error message
+      cvvError.textContent = '';
+  
+      if (!cvvPattern.test(cvvInput.value)) {
+        cvvError.textContent = 'Please enter a valid CVV.';
+        return false;
+      }
+  
+      // Additional custom validation
+      // Example: Ensure the CVV is not expired
+      // Replace 'validateCVVCustom' with your own custom validation function
+      if (!validateCVVCustom(cvvInput.value)) {
+        cvvError.textContent = 'This CVV is expired.';
+        return false;
+      }
+  
+      return true;
+    }
+  
+    // Time range validation function
+    function validateTimeRange() {
+      var startingTimeInput = document.getElementById('starting-time');
+      var endingTimeInput = document.getElementById('ending-time');
+      var timeError = document.getElementById('time-error');
+      var validationBullets = document.getElementById('validation-bullets');
+  
+      // Remove any previous error messages
+      timeError.textContent = '';
+      validationBullets.innerHTML = '';
+  
+      // Convert time inputs to Date objects for comparison
+      var startingTime = new Date('1970-01-01T' + startingTimeInput.value);
+      var endingTime = new Date('1970-01-01T' + endingTimeInput.value);
+      var currentTime = new Date();
+  
+      if (startingTime <= currentTime) {
+        timeError.textContent = 'Starting time should be greater than the current time.';
+        validationBullets.innerHTML += '<li>Starting time should be greater than the current time.</li>';
+      }
+  
+      if (startingTime >= endingTime) {
+        timeError.textContent = 'Invalid time range. Please select a valid time range.';
+        validationBullets.innerHTML += '<li>Invalid time range. Please select a valid time range.</li>';
+      }
+  
+      return validationBullets.innerHTML === '';
+    }
+  
+    // Date validation function
+    function validateDate() {
+      var dateInput = document.getElementById('date');
+      var dateError = document.getElementById('date-error');
+  
+      // Remove any previous error message
+      dateError.textContent = '';
+  
+      // Convert date input to a Date object for comparison
+      var selectedDate = new Date(dateInput.value);
+      var currentDate = new Date();
+  
+      if (selectedDate < currentDate) {
+        dateError.textContent = 'The date cannot be in the past.';
+        return false;
+      }
+  
+      return true;
+    }
+  
+    // Form validation function
+    function validateForm(event) {
+      var isValid = true;
+      isValid = validateCardNumber() && isValid;
+      isValid = validateCVV() && isValid;
+      isValid = validateTimeRange() && isValid;
+      isValid = validateDate() && isValid;
+  
+      if (!isValid) {
+        event.preventDefault();
+      }
+    }
+  
+    // Attach validation functions to card number, CVV, time, and date inputs' blur events
+    var cardNumberInput = document.getElementById('card-number');
+    var cvvInput = document.getElementById('cvv');
+    var startingTimeInput = document.getElementById('starting-time');
+    var endingTimeInput = document.getElementById('ending-time');
+    var dateInput = document.getElementById('date');
+  
+    cardNumberInput.addEventListener('blur', validateCardNumber);
+    cvvInput.addEventListener('blur', validateCVV);
+    startingTimeInput.addEventListener('blur', validateTimeRange);
+    endingTimeInput.addEventListener('blur', validateTimeRange);
+    dateInput.addEventListener('blur', validateDate);
+  </script>
+</body>
+</html>
