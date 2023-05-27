@@ -100,7 +100,8 @@
               {% if conferences %}
                 {% for conference in conferences %}
                   <div class="conference">
-                    <h3 class="conference-name">{{ conference.venue_city }}, {{ conference.venue_state }}</h3>
+                    <h1 class="conference-location">{{ conference.venue_name }}</h1>
+                    <h3 class="conference-location">{{ conference.venue_city }}, {{ conference.venue_state }}</h3>
                     <p class="conference-date">Date: {{ conference.date }}</p>
                     <p class="conference-details">Capacity: {{ conference.capacity }}</p>
                     <!-- Display other conference details as needed -->

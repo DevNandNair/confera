@@ -144,3 +144,7 @@ def profile(request):
     conferences = [payment.conference for payment in payments]  # Get corresponding conferences
 
     return render(request, 'profile.html', {'conferences': conferences})
+
+
+def contact(request):
+    return render(request, 'contact.html')

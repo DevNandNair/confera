@@ -9,5 +9,6 @@ urlpatterns = [
     path('venues/', views.conference_hall_details, name='venues'),
     path('payment/<int:conference_id>/', views.PaymentView.as_view(), name='payment'),
     path('profile/', views.profile, name='profile'),
+    path('contact/', views.contact, name='contact'),
     
 ]

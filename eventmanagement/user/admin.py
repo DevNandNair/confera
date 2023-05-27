@@ -7,3 +7,4 @@ admin.site.register(Conference)
 admin.site.register(Payment)
 
 
+
