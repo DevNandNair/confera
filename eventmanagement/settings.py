@@ -14,7 +14,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 INSTALLED_APPS = [
-    'jazzmin',
+    # 'jazzmin'
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -99,15 +99,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 LOGIN_URL = '/user/login/'
 
 
-
-# # Celery Configuration
-# CELERY_BROKER_URL = 'redis://localhost:6379/0'
-# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-
-# # Celery Periodic Task Schedule
-# CELERY_BEAT_SCHEDULE = {
-#     'check_conference_task': {
-#         'task': 'user.tasks.check_conference_task',
-#         'schedule': 5.0,  # Run every 5 seconds
-#     },
-# }
